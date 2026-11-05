@@ -1,0 +1,20 @@
+{
+  "steps": [
+    {
+      "detail": "arrow key moved selection from 13 to Cat",
+      "passed": true,
+      "step": "move"
+    },
+    {
+      "detail": "inserted Cat; playback timer advanced 2.0 s",
+      "passed": true,
+      "step": "act"
+    },
+    {
+      "detail": "now-playing line, progress controls and repeat/volume controls were drawn",
+      "passed": true,
+      "step": "hud"
+    }
+  ],
+  "version": 1
+}

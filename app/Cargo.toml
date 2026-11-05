@@ -1,0 +1,29 @@
+[package]
+name = "minecraft-jukebox"
+version = "1.0.0"
+edition = "2021"
+description = "A native Minecraft-styled music disc jukebox for macOS"
+license = "MIT"
+
+# Keep the app a single, standalone Cargo project even though this workspace's
+# parent folder once carried a virtual workspace manifest. Craft Anything builds
+# from app/, so the executable must land in app/target.
+[workspace]
+
+[dependencies]
+eframe = { version = "0.29.1", default-features = false, features = ["glow", "default_fonts"] }
+egui = "0.29.1"
+rodio = { version = "0.20.1", default-features = false, features = ["symphonia-vorbis"] }
+# rodio 0.20's `symphonia-vorbis` feature enables the codec but not the Ogg
+# container, so pull in the demuxer explicitly.
+symphonia = { version = "0.5", default-features = false, features = ["ogg", "vorbis"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+rfd = { version = "0.17.2", default-features = false }
+image = { version = "0.25", default-features = false, features = ["png"] }
+dirs = "6"
+anyhow = "1"
+
+[profile.release]
+opt-level = 2
+lto = "thin"

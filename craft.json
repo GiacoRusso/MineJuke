@@ -1,0 +1,423 @@
+{
+  "version": 2,
+  "name": "MineJuke",
+  "request": "Build a native macOS desktop app in Rust called \"Minecraft Jukebox\" that works like a Minecraft jukebox, so I can listen to Minecraft music discs without opening the game.\n\nSTACK (Rust only)\n- Rust 2021, single Cargo project, no web frontend, no other languages.\n- GUI: eframe/egui.\n- Audio: rodio with Ogg Vorbis support (symphonia or lewton), playing .ogg files directly.\n- Other crates: serde + serde_json (parse Minecraft asset index), rfd (native folder picker), image (load PNG textures), dirs (find home directory), anyhow (error handling).\n- Must compile with `cargo run --release` on macOS.\n\nFEATURES\n1. Disc selection: a grid with all Minecraft music discs (13, cat, blocks, chirp, far, mall, mellohi, stal, strad, ward, 11, wait, pigstep, otherside, 5, relic, creator, precipice). Each disc shows its artwork, track title and artist.\n2. Jukebox: the Minecraft jukebox sits in the center. Double-clicking a disc (or dragging it onto the jukebox) \"inserts\" it with a small animation and the music starts, like in the game.\n3. Animations: colorful music notes float out of the jukebox while playing, like in Minecraft. When the track ends, or when I press \"Eject\", the disc pops out.\n4. Controls: eject, volume slider, progress bar with elapsed time and duration, repeat toggle, previous/next disc.\n5. While a disc plays, show \"Now Playing: Artist - Title\" text, like in the game.\n6. Keyboard shortcuts: space to play/eject, arrow keys to change disc.\n\nVISUAL STYLE\n- Fully Minecraft-styled: bundled pixel font (Press Start 2P or similar free font, embedded with include_bytes!), square borders, inventory-style panels, block-texture background (dirt, stone or wood), Minecraft-style buttons with 3D bevel look and hover state.\n- All pixel art must render with nearest-neighbor filtering (no blur).\n- Dark theme, resizable window with a sensible minimum size.\n- If real textures are not available, draw original pixel-art discs and a jukebox procedurally in code (colored squares), one color per disc.\n\nAUDIO AND COPYRIGHT\n- Do NOT bundle any copyrighted audio files in the app.\n- On first launch, ask me to select my Minecraft Java folder (default suggestion: ~/Library/Application Support/minecraft) with a native folder picker, and remember it in a small JSON config file.\n- Read sounds from the assets folder: parse the newest assets/indexes/*.json, look up keys like \"minecraft/sounds/records/<name>.ogg\", and map each one to its file in assets/objects/<first two hash chars>/<hash>.\n- If the files are not found, show a friendly screen explaining how to choose the correct folder.\n- Play audio in a separate rodio sink so the UI never freezes. Track elapsed time to drive the progress bar.\n\nCODE STRUCTURE\n- Split into modules: main.rs, app.rs (egui app state and UI), disc.rs (disc list and metadata), player.rs (rodio playback), assets.rs (Minecraft folder and",
+  "target": {
+    "kind": "none"
+  },
+  "stack": "Rust + macroquad",
+  "status": "ready",
+  "note": "Ready: all 4 checks pass, 5 of 5 claims hold.",
+  "created_ms": 1793899057719,
+  "updated_ms": 1793909329155,
+  "checks": [
+    {
+      "round": 1,
+      "check": "build",
+      "passed": true,
+      "similarity": null,
+      "note": "Build succeeded.",
+      "artifacts": [],
+      "at_ms": 1793901132151
+    },
+    {
+      "round": 1,
+      "check": "app-screenshot",
+      "passed": false,
+      "similarity": null,
+      "note": "There's no built program to start yet.",
+      "artifacts": [],
+      "at_ms": 1793901132155
+    },
+    {
+      "round": 2,
+      "check": "build",
+      "passed": true,
+      "similarity": null,
+      "note": "Build succeeded.",
+      "artifacts": [],
+      "at_ms": 1793902563683
+    },
+    {
+      "round": 2,
+      "check": "app-screenshot",
+      "passed": true,
+      "similarity": null,
+      "note": "The program starts and draws (2360×1800).",
+      "artifacts": [
+        "checks/round-2/screenshot.png"
+      ],
+      "at_ms": 1793902569005
+    },
+    {
+      "round": 2,
+      "check": "game-self-test",
+      "passed": true,
+      "similarity": null,
+      "note": "The self-test plays the core loop: move (arrow key moved selection from 13 to Cat), act (inserted Cat; playback timer advanced 2.1 s), hud (now-playing line, progress controls and repeat/volume controls were drawn).",
+      "artifacts": [
+        "checks/round-2/self-test.json"
+      ],
+      "at_ms": 1793902569044,
+      "claims": [
+        {
+          "title": "In play, the player moves",
+          "passed": true
+        },
+        {
+          "title": "In play, the player's main action works",
+          "passed": true
+        },
+        {
+          "title": "In play, the on-screen information is drawn",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "check": "mechanics",
+      "passed": true,
+      "similarity": null,
+      "note": "app/mechanics.json has 56 values (21 with a source, 35 estimated).",
+      "artifacts": [],
+      "at_ms": 1793902569049,
+      "claims": [
+        {
+          "title": "disc count (18) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "screenshot warm-up (120) is used in the code",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "check": "build",
+      "passed": true,
+      "similarity": null,
+      "note": "Build succeeded.",
+      "artifacts": [],
+      "at_ms": 1793903087867
+    },
+    {
+      "round": 3,
+      "check": "app-screenshot",
+      "passed": true,
+      "similarity": null,
+      "note": "The program starts and draws (2360×1800).",
+      "artifacts": [
+        "checks/round-3/screenshot.png"
+      ],
+      "at_ms": 1793903092950
+    },
+    {
+      "round": 3,
+      "check": "game-self-test",
+      "passed": true,
+      "similarity": null,
+      "note": "The self-test plays the core loop: move (arrow key moved selection from 13 to Cat), act (inserted Cat; playback timer advanced 2.1 s), hud (now-playing line, progress controls and repeat/volume controls were drawn).",
+      "artifacts": [
+        "checks/round-3/self-test.json"
+      ],
+      "at_ms": 1793903093019,
+      "claims": [
+        {
+          "title": "In play, the player moves",
+          "passed": true
+        },
+        {
+          "title": "In play, the player's main action works",
+          "passed": true
+        },
+        {
+          "title": "In play, the on-screen information is drawn",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "check": "mechanics",
+      "passed": true,
+      "similarity": null,
+      "note": "app/mechanics.json has 56 values (21 with a source, 35 estimated).",
+      "artifacts": [],
+      "at_ms": 1793903093023,
+      "claims": [
+        {
+          "title": "disc count (18) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "screenshot warm-up (120) is used in the code",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "check": "build",
+      "passed": true,
+      "similarity": null,
+      "note": "Build succeeded.",
+      "artifacts": [],
+      "at_ms": 1793907232356
+    },
+    {
+      "round": 4,
+      "check": "app-screenshot",
+      "passed": true,
+      "similarity": null,
+      "note": "The program starts and draws (2360×1800).",
+      "artifacts": [
+        "checks/round-4/screenshot.png"
+      ],
+      "at_ms": 1793907237488
+    },
+    {
+      "round": 4,
+      "check": "game-self-test",
+      "passed": true,
+      "similarity": null,
+      "note": "The self-test plays the core loop: move (arrow key moved selection from 13 to Cat), act (inserted Cat; playback timer advanced 2.1 s), hud (now-playing line, progress controls and repeat/volume controls were drawn).",
+      "artifacts": [
+        "checks/round-4/self-test.json"
+      ],
+      "at_ms": 1793907237564,
+      "claims": [
+        {
+          "title": "In play, the player moves",
+          "passed": true
+        },
+        {
+          "title": "In play, the player's main action works",
+          "passed": true
+        },
+        {
+          "title": "In play, the on-screen information is drawn",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "check": "mechanics",
+      "passed": true,
+      "similarity": null,
+      "note": "app/mechanics.json has 60 values (21 with a source, 39 estimated).",
+      "artifacts": [],
+      "at_ms": 1793907237570,
+      "claims": [
+        {
+          "title": "disc count (22) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "screenshot warm-up (120) is used in the code",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "round": 5,
+      "check": "build",
+      "passed": true,
+      "similarity": null,
+      "note": "Build succeeded.",
+      "artifacts": [],
+      "at_ms": 1793908310069
+    },
+    {
+      "round": 5,
+      "check": "app-screenshot",
+      "passed": true,
+      "similarity": null,
+      "note": "The program starts and draws (2360×1800).",
+      "artifacts": [
+        "checks/round-5/screenshot.png"
+      ],
+      "at_ms": 1793908314101
+    },
+    {
+      "round": 5,
+      "check": "game-self-test",
+      "passed": true,
+      "similarity": null,
+      "note": "The self-test plays the core loop: move (arrow key moved selection from 13 to Cat), act (inserted Cat; playback timer advanced 2.1 s), hud (now-playing line, progress controls and repeat/volume controls were drawn).",
+      "artifacts": [
+        "checks/round-5/self-test.json"
+      ],
+      "at_ms": 1793908314169,
+      "claims": [
+        {
+          "title": "In play, the player moves",
+          "passed": true
+        },
+        {
+          "title": "In play, the player's main action works",
+          "passed": true
+        },
+        {
+          "title": "In play, the on-screen information is drawn",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "round": 5,
+      "check": "mechanics",
+      "passed": true,
+      "similarity": null,
+      "note": "app/mechanics.json has 60 values (21 with a source, 39 estimated).",
+      "artifacts": [],
+      "at_ms": 1793908314170,
+      "claims": [
+        {
+          "title": "disc count (22) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "screenshot warm-up (120) is used in the code",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "round": 6,
+      "check": "build",
+      "passed": true,
+      "similarity": null,
+      "note": "Build succeeded.",
+      "artifacts": [],
+      "at_ms": 1793909074676
+    },
+    {
+      "round": 6,
+      "check": "app-screenshot",
+      "passed": true,
+      "similarity": null,
+      "note": "The program starts and draws (2360×1800).",
+      "artifacts": [
+        "checks/round-6/screenshot.png"
+      ],
+      "at_ms": 1793909078770
+    },
+    {
+      "round": 6,
+      "check": "game-self-test",
+      "passed": true,
+      "similarity": null,
+      "note": "The self-test plays the core loop: move (arrow key moved selection from 13 to Cat), act (inserted Cat; playback timer advanced 2.1 s), hud (now-playing line, progress controls and repeat/volume controls were drawn).",
+      "artifacts": [
+        "checks/round-6/self-test.json"
+      ],
+      "at_ms": 1793909078837,
+      "claims": [
+        {
+          "title": "In play, the player moves",
+          "passed": true
+        },
+        {
+          "title": "In play, the player's main action works",
+          "passed": true
+        },
+        {
+          "title": "In play, the on-screen information is drawn",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "round": 6,
+      "check": "mechanics",
+      "passed": true,
+      "similarity": null,
+      "note": "app/mechanics.json has 60 values (21 with a source, 39 estimated).",
+      "artifacts": [],
+      "at_ms": 1793909078839,
+      "claims": [
+        {
+          "title": "disc count (22) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "screenshot warm-up (120) is used in the code",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "round": 7,
+      "check": "build",
+      "passed": true,
+      "similarity": null,
+      "note": "Build succeeded.",
+      "artifacts": [],
+      "at_ms": 1793909324554
+    },
+    {
+      "round": 7,
+      "check": "app-screenshot",
+      "passed": true,
+      "similarity": null,
+      "note": "The program starts and draws (2360×1800).",
+      "artifacts": [
+        "checks/round-7/screenshot.png"
+      ],
+      "at_ms": 1793909329058
+    },
+    {
+      "round": 7,
+      "check": "game-self-test",
+      "passed": true,
+      "similarity": null,
+      "note": "The self-test plays the core loop: move (arrow key moved selection from 13 to Cat), act (inserted Cat; playback timer advanced 2.0 s), hud (now-playing line, progress controls and repeat/volume controls were drawn).",
+      "artifacts": [
+        "checks/round-7/self-test.json"
+      ],
+      "at_ms": 1793909329128,
+      "claims": [
+        {
+          "title": "In play, the player moves",
+          "passed": true
+        },
+        {
+          "title": "In play, the player's main action works",
+          "passed": true
+        },
+        {
+          "title": "In play, the on-screen information is drawn",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "round": 7,
+      "check": "mechanics",
+      "passed": true,
+      "similarity": null,
+      "note": "app/mechanics.json has 61 values (21 with a source, 40 estimated).",
+      "artifacts": [],
+      "at_ms": 1793909329133,
+      "claims": [
+        {
+          "title": "disc count (22) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "screenshot warm-up (120) is used in the code",
+          "passed": true
+        }
+      ]
+    }
+  ],
+  "agent_session": null,
+  "allowed_actions": [],
+  "last_reply": "Ho rallentato la rotazione del disco, sia durante la riproduzione sia mentre viene inserito. Ora l'inserimento è fluido: il disco sale, si ingrandisce e arriva esattamente nella posizione di riproduzione senza scatti, e anche l'espulsione parte in modo continuo. Ho ricompilato e verificato build, test, self-test e screenshot: tutto passa.",
+  "asset_budget_usd": 5.0,
+  "generate_assets": false,
+  "questions": "ask"
+}

@@ -1,0 +1,4 @@
+name = "Build a native macOS desktop"
+purpose = "own_or_authorized"
+format_version = 1
+allowed_tools = []
